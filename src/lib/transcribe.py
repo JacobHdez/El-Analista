@@ -43,7 +43,13 @@ def start_job(job_name, media_uri, media_format, language_code, transcribe_clien
 			'TranscriptionJobName': job_name,
 			'Media': {'MediaFileUri': media_uri},
 			'MediaFormat': media_format,
-			'LanguageCode': language_code}
+			'LanguageCode': language_code,
+
+			'Settings': {
+				'MaxSpeakerLabels': 2,
+				'ShowSpeakerLabels': True}
+
+			}
 		if vocabulary_name is not None:
 			job_args['Settings'] = {'VocabularyName': vocabulary_name}
 		response = transcribe_client.start_transcription_job(**job_args)
@@ -132,5 +138,9 @@ def transcribe(media_file_name, media_object_key):
 	print("Deleting bucket.")
 	bucket.objects.delete()
 	bucket.delete()
+
+	# print('*' * 20)
+	# print(transcript_simple)
+	# print('*' * 20)
 
 	return transcript_simple['results']['transcripts'][0]['transcript']

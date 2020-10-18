@@ -1,7 +1,10 @@
-from lib.tools.tools import *
+from lib.tools.tools import clear
 from time import sleep
 import os
-from lib.transcribe import *
+from lib.transcribe import transcribe
+from lib.summary import summary
+from lib.keyphrases import key_phrases
+from lib.sentiment import sentiment
 
 def menu():
 	while True:
@@ -46,21 +49,58 @@ def main():
 
 	# ---------- transcribe ----------
 	print('-' * 100)
-	text = []
+	transcribe_text = []
 	if r == '1':
 		media_file_name = path
 		media_object_key = media_file_name[path.rfind('/') + 1:]
 
-		text.append(transcribe(media_file_name, media_object_key))
+		transcribe_text.append(transcribe(media_file_name, media_object_key))
 
 	elif r == '2':
 		media_files_names = os.listdir(path)
 		for media_object_key in media_files_names:
 			media_file_name = path + media_object_key
 
-			text.append(transcribe(media_file_name, media_object_key))
+			transcribe_text.append(transcribe(media_file_name, media_object_key))
 
-	print(text)
+	# ---------- sentiment ----------
+	print('-' * 100)
+	sentiment_out = []
+	if r == '1':
+		sentiment_out.append(sentiment(transcribe_text[0]))
+
+	elif r == '2':
+		for t_text in transcribe_text:
+			sentiment_out.append(sentiment(t_text))
+
+	# print(sentiment_out)
+
+	# ---------- summary ----------
+	print('-' * 100)
+	summary_text = []
+	if r == '1':
+		summary_text.append(summary(transcribe_text[0])[0])
+
+	elif r == '2':
+		for t_text in transcribe_text:
+			summary_text.append(summary(t_text)[0])
+
+	# print(summary_text)
+
+	# ---------- key phrases ----------
+	print('-' * 100)
+	keyp = []
+	if r == '1':
+		keyp.append(key_phrases(summary_text[0]))
+
+	elif r == '2':
+		for s_text in summary_text:
+			keyp.append(key_phrases(s_text))
+
+	# print(keyp)
+
+	# ---------- class to be archived to be read in the nootebook to show result  ----------
+	# ...
 
 
 if __name__ == '__main__':
@@ -75,3 +115,4 @@ if __name__ == '__main__':
 	print('-' * 100)
 	print("Thanks for trying!")
 	print('-' * 100)
+	input()
